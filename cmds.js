@@ -145,9 +145,9 @@ exports.playCmd = rl => {
                     log(`Error`);
                     log(`Número de aciertos:`);
                     biglog(`${score}`);
-
+                    rl.prompt();
                 }
-                rl.prompt();
+                
             });
         }
     };
