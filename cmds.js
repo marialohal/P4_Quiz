@@ -160,7 +160,7 @@ exports.playCmd = rl => {
 
 exports.creditsCmd = rl =>{
     log('Autor de la practica');
-    log('María López González', 'green');
+    log('MARIA', 'green');
     rl.prompt();
 };
 
