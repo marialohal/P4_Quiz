@@ -143,7 +143,7 @@ exports.playCmd = rl => {
                     log(`Aciertos:`);
                     biglog(score);
                 } else if ((theAnswers[0].replace(rightAnswer, quiz.answer).toLowerCase().trim()) === (quiz.answer.toLowerCase().trim())) {
-                    score = score + 1;
+                    
                     log(`Llevas ${score + 1} aciertos`);
                     playOne();
                 } else {
