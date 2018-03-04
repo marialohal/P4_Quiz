@@ -12,7 +12,7 @@
     "core",
     "node"
   ],
-  "author": "Maria Lopez Gonzalez",
+  "author": "MARIA",
   "license": "Unlicense",
   "dependencies": {
     "chalk": "^2.3.1",
