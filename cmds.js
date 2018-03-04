@@ -92,7 +92,7 @@ exports.testCmd = (rl,id) =>{
         try{
            const quiz = model.getByIndex(id);
             rl.question(colorize(`${quiz.question}? =>`, 'red'), resp => {
-                let rightAnswer = RegExp(quiz.answer, 'i');
+                let rightAnswer = RegExp(quiz.answer, 'g');
                 const theAnswers = resp.match(rightAnswer);
                 if(theAnswers == null){
                     biglog(`INCORRECTO`, 'red');
@@ -136,7 +136,7 @@ exports.playCmd = rl => {
             const quiz = model.getByIndex(idRandom);
             toBeResolved.splice(toBeResolved[Math.floor(Math.random() * toBeResolved.length)], 1);
             rl.question(colorize(`${quiz.question}? =>`, 'red'), resp => {
-                let rightAnswer = RegExp(quiz.answer, 'i');
+                let rightAnswer = RegExp(quiz.answer, 'g');
                 const theAnswers = resp.match(rightAnswer);
                 if (theAnswers == null) {
                     log(`Fin de examen.`);
