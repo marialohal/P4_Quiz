@@ -138,8 +138,8 @@ exports.playCmd = rl => {
             toBeResolved.splice(aleat, 1);
             rl.question(colorize(`${quiz.question}? =>`, 'red'), resp => {
                 if ((resp.toLowerCase().trim()) === (quiz.answer.toLowerCase().trim())) {
-                    score = score + 1;
-                    log(`Llevas ${score + 1} aciertos`);
+                    score++;
+                    log(`Llevas ${score} aciertos`);
                     playOne();
                 } else {
                     log(`Error`);
@@ -147,13 +147,12 @@ exports.playCmd = rl => {
                     biglog(`${score}`);
                     rl.prompt();
                 }
-                
+
             });
         }
     };
     playOne();
 };
-
 
 exports.creditsCmd = rl =>{
     log('Autor de la practica');
