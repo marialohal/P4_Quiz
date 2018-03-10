@@ -8,14 +8,15 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
-    "quiz",
-    "core",
-    "node"
+    "CORE",
+    "QUIT"
   ],
   "author": "MARIA",
   "license": "Unlicense",
   "dependencies": {
     "chalk": "^2.3.1",
-    "figlet": "^1.2.0"
+    "figlet": "^1.2.0",
+    "sequelize": "^4.35.4",
+    "sqlite3": "^3.1.13"
   }
 }
