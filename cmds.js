@@ -180,7 +180,7 @@ exports.testCmd = (rl,id) => {
 exports.playCmd = rl => {
     let score = 0;
     let toBeResolved = [];
-    model.getAll().forEach((quiz, id) => {
+    models.getAll().forEach((quiz, id) => {
         toBeResolved.push(id);
     });
     const playOne = () => {
