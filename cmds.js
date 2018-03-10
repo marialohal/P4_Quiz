@@ -180,9 +180,7 @@ exports.testCmd = (rl,id) => {
 exports.playCmd = rl => {
     let score = 0;
     let toBeResolved = [];
-    models.quiz.findAll((id)) =>{
-        toBeResolved.push(id);
-    });
+    
     const playOne = () => {
         return new Promise((resolve, reject) => {
             if (toBeResolved.length = 0) {
