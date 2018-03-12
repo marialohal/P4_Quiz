@@ -184,8 +184,7 @@ exports.playCmd = rl => {
     const playOne = () => {
         return new Promise((resolve, reject) => {
             if (toBeResolved.length = 0) {
-                log(`No hay nada más que preguntar.`);
-                log(`Fin del examen.`);
+                log("No hay nada más que preguntar.\nFin del examen.")
                 log(`Aciertos:`);
                 resolve();
                 return;
@@ -201,8 +200,8 @@ exports.playCmd = rl => {
                         log(`Llevas ${score} aciertos`);
                         playOne();
                     } else {
-                         log("\nRespuesta incorrecta\n");
-                         log(`Fin del juego`);
+                         log(`Incorrecto`);
+                         log("\nFin del juego.");
                          log(`Número de aciertos:`);
                          biglog(`${score}`);
                          log("Pruebe de nuevo\n");
