@@ -154,24 +154,24 @@ exports.testCmd = (rl,id) => {
         .then(id => models.quiz.findById(id))
         .then(quiz => {
             if (!quiz) {
-                throw new Error(`No existe un quiz asociado al id=${id}`);
+                throw new Error(`No existe un quiz asociado al id=${id}.`);
             }
-            log(`[${colorize(quiz.id, 'magenta')}]: ${quiz.question} `);
-            return makeQuestion(rl, quiz.question)
-                .then(a => {
-                    if (a.toLowerCase().trim() == quiz.toLowerCase().trim()) {
+            return new Promise ((resolve, reject) => {
+            makeQuestion(rl, quiz.question)
+                .then(answer => {
+                    if (answer.toLowerCase().trim() === quiz.answer.toLowerCase().trim()) {
                         log(`Respuesta correcta`);
                         biglog('Correcta', 'green');
+                        resolve();
                     } else {
                         log(`Respuesta incorrecta`);
                         biglog('Incorrecta', 'red');
+                        resolve();
                     }
-                });
+                })
         })
-        .catch(Sequelize.ValidationError, error => {
-              errorlog("Quiz incorrecto: ");
-              error.errors.forEach(({message})=>errorlog(message));
     })
+  
         .catch(error => {
             errorlog(error.message);
         })
@@ -181,29 +181,27 @@ exports.testCmd = (rl,id) => {
 };
 
 
+
 exports.playCmd = rl => {
     let score = 0;
     let toBeResolved = [];
     
-    models.quiz.findAll()
-        .then(quizzes => {
-        quizzes.forEach((quiz,id) =>{
-            toBeResolved[id] = quiz;
-        });
+   
         
     const playOne = () => {
         
-        
-            if (toBeResolved.length === 0) {
+       return new Promise ((resolve, reject) =>{
+            if (toBeResolved.length === "undefined" || typeof toBeResolved === "undefined" === toBeResolved.lenght === 0) {
                 log("No hay nada más que preguntar.\nFin del examen.")
                 log(`Aciertos: ${score}`);
-                rl.prompt();
+                resolve();
+                return;
             }else{
             let aleat = Math.floor(Math.random() * toBeResolved.length);
             let quiz = toBeResolved[aleat];
             toBeResolved.splice(aleat, 1);
 
-            return makeQuestion(rl, quiz.question)
+            makeQuestion(rl, 'Introduzca la respuesta: ')
                 .then(a => {
                     if (a.toLowerCase().trim() === quiz.answer.toLowerCase().trim()) {
                         score++;
@@ -219,16 +217,32 @@ exports.playCmd = rl => {
                          rl.prompt();
                     }
                 })
-                .catch(error => {
-                  errorlog(error.message);
-        })
-                .then(() =>{
-                   rl.prompt();
-            });
-            }
-    };
-    playOne();
-    });
+            })
+       }
+                           
+                                
+  models.quiz.findAll() 
+      .then(quizzes => {     
+      quizzes.forEach((quiz,id) =>{
+      toBeResolved[id] = quiz;
+       })
+    
+    .then(() => {
+        return playOne();  //es necesario esperar a que la promesa acabe, por eso no es un return a secas
+          })
+    .catch(Sequelize.ValidationError,error =>{
+         errorlog('El quiz es erroneo: ');
+         error.errors.forEach(({message}) => errorlog(message));
+         rl.prompt();
+          })
+    .catch(error => {
+        errorlog(error.message);
+          })
+    .then(() =>{
+     log(`${score}`);
+     rl.prompt();
+     });
+};
 
 exports.creditsCmd = rl =>{
     log('Autor de la practica');
