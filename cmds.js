@@ -154,12 +154,12 @@ exports.testCmd = (rl,id) => {
         .then(id => models.quiz.findById(id))
         .then(quiz => {
             if (!quiz) {
-                throw new Error(`No existe un quiz asociado al id=${id}.`);
+                throw new Error(`No existe un quiz asociado al id=${id}`);
             }
             log(`[${colorize(quiz.id, 'magenta')}]: ${quiz.question} `);
-            return makeQuestion(rl, 'Introduzca la respuesta:')
+            return makeQuestion(rl, quiz.question)
                 .then(a => {
-                    if (quiz.answer.toUpperCase() === a.toUpperCase().trim()) {
+                    if (a.toLowerCase().trim() == quiz.toLowerCase().trim()) {
                         log(`Respuesta correcta`);
                         biglog('Correcta', 'green');
                     } else {
@@ -168,6 +168,10 @@ exports.testCmd = (rl,id) => {
                     }
                 });
         })
+        .catch(Sequelize.ValidationError, error => {
+              errorlog("Quiz incorrecto: ");
+              error.errors.forEach(({message})=>errorlog(message));
+    })
         .catch(error => {
             errorlog(error.message);
         })
@@ -181,22 +185,29 @@ exports.playCmd = rl => {
     let score = 0;
     let toBeResolved = [];
     
+    models.quiz.findAll()
+        .then(quizzes => {
+        quizzes.forEach((quiz,id) =>{
+            toBeResolved[id] = quiz;
+        });
+        
     const playOne = () => {
-        return new Promise((resolve, reject) => {
-            if (toBeResolved.length = 0) {
+        
+        
+            if (toBeResolved.length === 0) {
                 log("No hay nada más que preguntar.\nFin del examen.")
-                log(`Aciertos:`);
-                resolve();
-                return;
-            }
+                log(`Aciertos: ${score}`);
+                rl.prompt();
+            }else{
             let aleat = Math.floor(Math.random() * toBeResolved.length);
             let quiz = toBeResolved[aleat];
             toBeResolved.splice(aleat, 1);
 
-            makeQuestion(rl, quiz.question + '?')
-                .then(answer => {
-                    if (answer.toLowerCase().trim() === quiz.answer.toLowerCase().trim()) {
+            return makeQuestion(rl, quiz.question)
+                .then(a => {
+                    if (a.toLowerCase().trim() === quiz.answer.toLowerCase().trim()) {
                         score++;
+                        log(`Correcto`);
                         log(`Llevas ${score} aciertos`);
                         playOne();
                     } else {
@@ -205,27 +216,19 @@ exports.playCmd = rl => {
                          log(`Número de aciertos:`);
                          biglog(`${score}`);
                          log("Pruebe de nuevo\n");
-                         resolve();
+                         rl.prompt();
                     }
                 })
+                .catch(error => {
+                  errorlog(error.message);
         })
-    }
-
-    models.quiz.findAll({raw: true})
-        .then(quizzes => {
-            toBeResolved = quizzes;
-        })
-        .then(() => {
-            return playOne();
-        })
-        .catch(error => {
-            log(error);
-        })
-        .then(() => {
-            biglog(score, 'magenta');
-            rl.prompt();
-        })
-};
+                .then(() =>{
+                   rl.prompt();
+            });
+            }
+    };
+    playOne();
+    });
 
 exports.creditsCmd = rl =>{
     log('Autor de la practica');
