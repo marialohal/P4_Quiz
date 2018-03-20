@@ -156,22 +156,18 @@ exports.testCmd = (rl,id) => {
             if (!quiz) {
                 throw new Error(`No existe un quiz asociado al id=${id}.`);
             }
-            return new Promise ((resolve, reject) => {
-            makeQuestion(rl, quiz.question)
-                .then(answer => {
-                    if (answer.toLowerCase().trim() === quiz.answer.toLowerCase().trim()) {
+            log(`[${colorize(quiz.id, 'magenta')}]: ${quiz.question} `);
+            return makeQuestion(rl, 'Introduzca la respuesta:')
+                .then(a => {
+                    if (quiz.answer.toUpperCase() === a.toUpperCase().trim()) {
                         log(`Respuesta correcta`);
                         biglog('Correcta', 'green');
-                        resolve();
                     } else {
                         log(`Respuesta incorrecta`);
                         biglog('Incorrecta', 'red');
-                        resolve();
                     }
-                })
+                });
         })
-    })
-  
         .catch(error => {
             errorlog(error.message);
         })
@@ -181,67 +177,55 @@ exports.testCmd = (rl,id) => {
 };
 
 
-
 exports.playCmd = rl => {
     let score = 0;
     let toBeResolved = [];
-    
-   
-        
+    model.getAll().forEach((quiz, id) => {
+        toBeResolved.push(id);
+    });
     const playOne = () => {
-        
-       return new Promise ((resolve, reject) =>{
-            if (toBeResolved.length === "undefined" || typeof toBeResolved === "undefined" === toBeResolved.lenght === 0) {
-                log("No hay nada más que preguntar.\nFin del examen.")
-                log(`Aciertos: ${score}`);
+        return new Promise((resolve, reject) => {
+            if (toBeResolved.length = 0) {
+                log(`No hay nada más que preguntar.`);
+                log(`Fin del examen.`);
+                log(`Aciertos:`);
                 resolve();
                 return;
-            }else{
+            }
             let aleat = Math.floor(Math.random() * toBeResolved.length);
             let quiz = toBeResolved[aleat];
             toBeResolved.splice(aleat, 1);
 
-            makeQuestion(rl, 'Introduzca la respuesta: ')
-                .then(a => {
-                    if (a.toLowerCase().trim() === quiz.answer.toLowerCase().trim()) {
+            makeQuestion(rl, quiz.question + '?')
+                .then(answer => {
+                    if (answer.toLowerCase().trim() === quiz.answer.toLowerCase().trim()) {
                         score++;
-                        log(`Correcto`);
                         log(`Llevas ${score} aciertos`);
                         playOne();
                     } else {
-                         log(`Incorrecto`);
-                         log("\nFin del juego.");
-                         log(`Número de aciertos:`);
-                         biglog(`${score}`);
-                         log("Pruebe de nuevo\n");
-                         rl.prompt();
+                        log(`Error`);
+                        log(`Número de aciertos:`);
+                        biglog(`${score}`);
+                        resolve();
                     }
                 })
-            })
-       }
-                           
-                                
-  models.quiz.findAll() 
-      .then(quizzes => {     
-      quizzes.forEach((quiz,id) =>{
-      toBeResolved[id] = quiz;
-       })
-    
-    .then(() => {
-        return playOne();  //es necesario esperar a que la promesa acabe, por eso no es un return a secas
-          })
-    .catch(Sequelize.ValidationError,error =>{
-         errorlog('El quiz es erroneo: ');
-         error.errors.forEach(({message}) => errorlog(message));
-         rl.prompt();
-          })
-    .catch(error => {
-        errorlog(error.message);
-          })
-    .then(() =>{
-     log(`${score}`);
-     rl.prompt();
-     });
+        })
+    }
+
+    models.quiz.findAll({raw: true})
+        .then(quizzes => {
+            toBeResolved = quizzes;
+        })
+        .then(() => {
+            return playOne();
+        })
+        .catch(error => {
+            log(error);
+        })
+        .then(() => {
+            biglog(score, 'magenta');
+            rl.prompt();
+        })
 };
 
 exports.creditsCmd = rl =>{
