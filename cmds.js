@@ -156,8 +156,8 @@ exports.testCmd = (socket,rl,id) => {
             if (!quiz) {
                 throw new Error(`No existe un quiz asociado al id=${id}.`);
             }
-            
-            return makeQuestion(rl, `${quiz.question} ?`)
+           log(socket,`[${colorize(quiz.id, 'magenta')}]: ${quiz.question} `);
+            return makeQuestion(rl, 'Introduzca la respuesta:')
                 .then(a => {
                     if (quiz.answer.toUpperCase() === a.toUpperCase().trim()) {
                         log(socket,`Respuesta correcta`);
