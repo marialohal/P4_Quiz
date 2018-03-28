@@ -62,7 +62,7 @@ exports.showCmd = (socket,rl,id) => {
         });
 };
 
-const makeQuestion = (socket,rl, text) => {
+const makeQuestion = (rl, text) => {
     return new Sequelize.Promise((resolve, reject) =>{
         rl.question(colorize(text, 'red'), answer => {
             resolve(answer.trim());
