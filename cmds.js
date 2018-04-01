@@ -171,10 +171,12 @@ exports.testCmd = (socket,rl,id) => {
         })
         .catch(error => {
             errorlog(socket,error.message);
+            rl.prompt();
         })
+    /*
         .then(() => {
             rl.prompt();
-        });
+        });*/
 };
 
 
