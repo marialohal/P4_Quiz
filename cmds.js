@@ -150,6 +150,7 @@ exports.editCmd = (socket,rl,id) => {
 
 
 exports.testCmd = (socket,rl,id) => {
+    models.quiz.findAll();
     validateId(id)
         .then(id => models.quiz.findById(id))
         .then(quiz => {
@@ -181,9 +182,10 @@ exports.playCmd = (socket,rl) => {
     let score = 0;
     let toBeResolved = [];
 
-    model.getAll().forEach((quiz, id) => {
+    
+    /*model.getAll().forEach((quiz, id) => {
         toBeResolved.push(id);
-    });
+    });*/
 
     const playOne = () => {
         return new Promise((resolve, reject) => {
