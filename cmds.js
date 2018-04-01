@@ -171,12 +171,11 @@ exports.testCmd = (socket,rl,id) => {
         })
         .catch(error => {
             errorlog(socket,error.message);
-            rl.prompt();
+            
         })
-    /*
         .then(() => {
             rl.prompt();
-        });*/
+        })
 };
 
 
@@ -184,10 +183,6 @@ exports.playCmd = (socket,rl) => {
     let score = 0;
     let toBeResolved = [];
 
-    
-    /*model.getAll().forEach((quiz, id) => {
-        toBeResolved.push(id);
-    });*/
 
     const playOne = () => {
         return new Promise((resolve, reject) => {
